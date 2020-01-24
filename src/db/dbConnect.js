@@ -21,7 +21,7 @@ const db = mongoose.connection;
 // Handling error DB
 db.on("error", () => {
     console.log("> error occurred from the database");
-    throw new Error("Something went wrong connecting to DB", Error);
+    throw new Error("Something went wrong connecting to DB");
 });
 
 // Connected message
