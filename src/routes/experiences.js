@@ -7,7 +7,7 @@ const router = express.Router();
 
 // To test if all running ok
 router.get("/", async (req, res) => {
-    res.send('expereinces endpoint!');
+    res.send('OK');
 });
 
 module.exports = router;

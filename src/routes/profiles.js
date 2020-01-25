@@ -1,13 +1,14 @@
 // Express
 const express = require("express");
-// model
-// const db = require("../models/models.index");
+// Controller
+const { ProfilesCtrl } = require("../controllers");
+
 // Router
 const router = express.Router();
 
-// To test if all running ok
-router.get("/", async (req, res) => {
-    res.send('profiles endpoint!');
-});
+// GET all the profiles => <URL>/api/v1/profiles
+router.get("/", ProfilesCtrl.getAll);
+// POST creates a new profile => <url>api/v1/profiles
+router.post("/", ProfilesCtrl.create);
 
 module.exports = router;
