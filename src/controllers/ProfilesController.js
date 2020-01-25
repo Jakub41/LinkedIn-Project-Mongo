@@ -4,11 +4,14 @@ const { ErrorHandlers } = require("../utilities");
 
 // Profiles Controller
 const ProfilesController = {
+    // To GET ALL the profiles
     async getAll(req, res, next) {
         try {
+            // Profiles from DB & count how many
             const profiles = await Profile.find({});
             const profilesCount = await Profile.countDocuments();
 
+            // No profiles from DB then error via handler
             if (profiles.length === 0) {
                 throw new ErrorHandlers.ErrorHandler(
                     404,
@@ -16,10 +19,12 @@ const ProfilesController = {
                 );
             }
 
-            res.status(200).json({ count: profilesCount, profiles});
+            res.status(200).json({ count: profilesCount, profiles });
             // Passing the error to the error-handling middleware in server.js
             next();
         } catch (err) {
+            // Internal server error
+            if (err) throw new ErrorHandlers.ErrorHandler(500, err);
             next(err);
         }
     },
