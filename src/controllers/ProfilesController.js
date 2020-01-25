@@ -18,34 +18,42 @@ const ProfilesController = {
                     "No profiles have been found"
                 );
             }
-
+            // Sending response with results
             res.status(200).json({ count: profilesCount, profiles });
             // Passing the error to the error-handling middleware in server.js
             next();
         } catch (err) {
             // Internal server error
-            if (err) throw new ErrorHandlers.ErrorHandler(500, err);
             next(err);
         }
     },
 
-    async create(req, res) {
+    // To Create a new profile
+    async createNew(req, res, next) {
         console.log(req.body);
-        const newProfile = new Profile(req.body);
-        await newProfile
-            .save()
-            .then(() =>
-                res.json({
-                    message: "New Profile added",
-                    data: req.body
-                })
-            )
-            .catch(err =>
-                res.status(400).json({
-                    Msg: "Creation of a new student failed",
-                    Error: err
-                })
-            );
+        // Profile init
+        const profile = new Profile({
+            ...req.body
+        });
+
+        try {
+            // Await the save
+            const newProfile = await profile.save();
+            // If save fail send error via handler
+            if (!newProfile) {
+                throw new ErrorHandlers.ErrorHandler(
+                    400,
+                    "Profile cannot be saved"
+                );
+            }
+
+            // All OK send the response with results
+            res.status(201).json({ message: "New profile added", newProfile });
+            next();
+        } catch (err) {
+            // Errors
+            next(err);
+        }
     }
 };
 
