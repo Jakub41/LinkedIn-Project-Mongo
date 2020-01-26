@@ -67,51 +67,29 @@ const ProfilesController = {
     },
 
     async update(req, res) {
-        // Need to be written better this part for check the req.body fields
-        if (req.body.firstname) {
-            res.id.firstname = req.body.firstname;
-        }
-
-        if (req.body.surname) {
-            res.id.surname = req.body.surname;
-        }
-
-        if (req.body.email) {
-            res.id.email = req.body.email;
-        }
-
-        if (req.body.bio) {
-            res.id.bio = req.body.bio;
-        }
-
-        if (req.body.title) {
-            res.id.title = req.body.title;
-        }
-
-        if (req.body.area) {
-            res.id.area = req.body.area;
-        }
-
-        if (req.body.username) {
-            res.id.username = req.body.username;
-        }
-
-        // Updating with the new date time
-        if (req.body) {
-            res.id.updatedAt = new Date();
-        }
-
         try {
-            // Saving the changes to update
-            const updatedProfile = await res.id.save();
+            // Check for empty req.body
+            if (Object.keys(req.body).length === 0) {
+                throw new ErrorHandlers.ErrorHandler(500, "Nothing to update");
+            } else {
+                // Find
+                const updatedProfile = await Profile.findByIdAndUpdate(
+                    { _id: res.id._id },
+                    { updatedAt: new Date() },
+                    req.body,
+                    (err, response) => {
+                        return response;
+                    }
+                );
 
-            // Error check
-            if (!updatedProfile) {
-                throw new ErrorHandlers.ErrorHandler(400, "Update failed");
+                // Error check
+                if (!updatedProfile) {
+                    throw new ErrorHandlers.ErrorHandler(400, "Update failed");
+                }
+
+                // Send result
+                res.json(updatedProfile);
             }
-
-            // Send result
-            res.json(updatedProfile);
         } catch (err) {
             res.status(500).json({ message: err.message });
         }

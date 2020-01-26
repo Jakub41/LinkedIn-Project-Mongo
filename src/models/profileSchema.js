@@ -68,7 +68,7 @@ const profileSchema = {
         trim: true,
         lowercase: true,
         unique: true,
-        required: true,
+        required: [true, "Email is required"],
         validate: {
             validator: string => isEmail(string),
             message: "Provided email is invalid"
