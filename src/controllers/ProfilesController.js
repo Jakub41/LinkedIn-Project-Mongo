@@ -19,6 +19,7 @@ const ProfilesController = {
                     "No profiles have been found"
                 );
             }
+
             // Sending response with results
             res.status(200).json({ count: profilesCount, profiles });
         } catch (err) {

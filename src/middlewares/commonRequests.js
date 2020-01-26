@@ -8,7 +8,7 @@ const CommonRequestsMiddleware = {
             if (!id) {
                 throw new ErrorHandlers.ErrorHandler(
                     404,
-                    "No Id have been found"
+                    `No Id ${req.params.id} have been found`
                 );
             }
         } catch (err) {
