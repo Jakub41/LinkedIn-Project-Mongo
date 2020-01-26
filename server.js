@@ -21,7 +21,7 @@ const port = Config.server.port || 5000;
 app.use(cors());
 
 // Public to upload files
-app.use(express.static(path.join(__dirname, "/public")));
+app.use(express.static(path.join(__dirname, "./public")));
 
 // JSON
 app.use(express.json());

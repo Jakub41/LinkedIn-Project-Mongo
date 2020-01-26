@@ -139,5 +139,5 @@ tmp/
 temp/
 
 .vscode
-
+/public
 # End of https://www.gitignore.io/api/node,macos,dotenv
