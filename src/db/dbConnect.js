@@ -11,7 +11,8 @@ const baseUrl = uri + port + name;
 mongoose.connect(baseUrl, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
-    useCreateIndex: true
+    useCreateIndex: true,
+    useFindAndModify: false
 });
 
 // Establish the connection

@@ -8,6 +8,9 @@ const { ProfilesCtrl } = require("../controllers");
 // Allows to not write again same requests for common GET :params
 const { CommonReq } = require("../middlewares");
 
+// Upload Picture utility
+const { Upload } = require("../utilities");
+
 // Router
 const router = express.Router();
 
@@ -18,10 +21,23 @@ router.get("/", ProfilesCtrl.getAll);
 router.get("/:id", CommonReq.getById, ProfilesCtrl.getByUserId);
 
 // GET one profile by userName => <URL>/api/v1/profiles/:username
-router.get("/username/:username", CommonReq.getByUserName, ProfilesCtrl.getByUserName);
+router.get(
+    "/username/:username",
+    CommonReq.getByUserName,
+    ProfilesCtrl.getByUserName
+);
 
 // POST creates a new profile => <url>api/v1/profiles
 router.post("/", ProfilesCtrl.createNew);
+
+// POST Profile picture => <URL>/api/v1/profiles/:username/upload
+router.post(
+    "/:username/upload",
+    CommonReq.getByUserName,
+    Upload.upload.single("file"),
+    ProfilesCtrl.uploadPicture,
+
+);
 
 // PATCH updates just the fields we need instead of PUT which updates the whole chunk
 router.patch("/:id", CommonReq.getById, ProfilesCtrl.update);

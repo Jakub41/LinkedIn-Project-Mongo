@@ -28,6 +28,16 @@ const ProfilesController = {
         }
     },
 
+    async getByUserId(req, res) {
+        // Send back the profile corresponding on the id
+        res.json(res.id);
+    },
+
+    async getByUserName(req, res) {
+        // Send back the profile corresponding on the username
+        res.json(res.username);
+    },
+
     // To Create a new profile
     async createNew(req, res, next) {
         console.log(req.body);
@@ -56,14 +66,42 @@ const ProfilesController = {
         }
     },
 
-    async getByUserId(req, res) {
-        // Send back the profile corresponding on the id
-        res.json(res.id);
-    },
+    async uploadPicture(req, res) {
+        try {
+            if (!req.file) {
+                throw new ErrorHandlers.ErrorHandler(
+                    500,
+                    "No picture to upload has been provided"
+                );
+            }
 
-    async getByUserName(req, res) {
-        // Send back the profile corresponding on the username
-        res.json(res.username);
+            req.file =
+                req.protocol +
+                "://" +
+                req.get("host") +
+                "/images/" +
+                req.file.filename;
+
+            const newProfileUrl = await Profile.findOneAndUpdate(
+                { username: res.username.username },
+                {
+                    $set: { imageUrl: req.file }
+                }
+            );
+
+            if (!newProfileUrl)
+                throw new ErrorHandlers.ErrorHandler(500, "Upload failed");
+
+            newProfileUrl.save();
+
+            res.json({
+                username: res.username.username,
+                message: "Image URL updated",
+                imgUrl: req.file
+            });
+        } catch (err) {
+            res.status(500).json(err);
+        }
     },
 
     async update(req, res) {

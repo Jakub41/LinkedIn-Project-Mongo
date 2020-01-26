@@ -1,5 +1,7 @@
 // Config of the app - ENV
 const { Config } = require("./src/config");
+const path = require("path");
+
 // Errors
 const { Errors, ServerStatus } = require("./src/middlewares");
 const Err = require("./src/utilities");
@@ -17,6 +19,9 @@ const port = Config.server.port || 5000;
 
 // Cors
 app.use(cors());
+
+// Public to upload files
+app.use(express.static(path.join(__dirname, "/public")));
 
 // JSON
 app.use(express.json());

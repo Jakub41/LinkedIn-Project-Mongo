@@ -1,4 +1,5 @@
 // Here utilities
 module.exports = {
-    ErrorHandlers: require("./error")
+    ErrorHandlers: require("./error"),
+    Upload: require("./imgUpload")
 };
