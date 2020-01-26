@@ -1,5 +1,6 @@
 // Profile model
 const { Profile } = require("../models");
+// Error handling
 const { ErrorHandlers } = require("../utilities");
 
 // Profiles Controller
@@ -20,11 +21,9 @@ const ProfilesController = {
             }
             // Sending response with results
             res.status(200).json({ count: profilesCount, profiles });
-            // Passing the error to the error-handling middleware in server.js
-            next();
         } catch (err) {
             // Internal server error
-            next(err);
+            res.status(500).json(err);
         }
     },
 
@@ -49,10 +48,82 @@ const ProfilesController = {
 
             // All OK send the response with results
             res.status(201).json({ message: "New profile added", newProfile });
-            next();
+            // next();
         } catch (err) {
             // Errors
-            next(err);
+            res.status(500).json(err);
+        }
+    },
+
+    async getByUserId(req, res) {
+        // Send back the profile corresponding on the id
+        res.json(res.id);
+    },
+
+    async getByUserName(req, res) {
+        // Send back the profile corresponding on the username
+        res.json(res.username);
+    },
+
+    async update(req, res) {
+        // Need to be written better this part for check the req.body fields
+        if (req.body.firstname) {
+            res.id.firstname = req.body.firstname;
+        }
+
+        if (req.body.surname) {
+            res.id.surname = req.body.surname;
+        }
+
+        if (req.body.email) {
+            res.id.email = req.body.email;
+        }
+
+        if (req.body.bio) {
+            res.id.bio = req.body.bio;
+        }
+
+        if (req.body.title) {
+            res.id.title = req.body.title;
+        }
+
+        if (req.body.area) {
+            res.id.area = req.body.area;
+        }
+
+        if (req.body.username) {
+            res.id.username = req.body.username;
+        }
+
+        // Updating with the new date time
+        if (req.body) {
+            res.id.updatedAt = new Date();
+        }
+
+        try {
+            // Saving the changes to update
+            const updatedProfile = await res.id.save();
+
+            // Error check
+            if (!updatedProfile) {
+                throw new ErrorHandlers.ErrorHandler(400, "Update failed");
+            }
+
+            // Send result
+            res.json(updatedProfile);
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    },
+
+    async delete(req, res) {
+        try {
+            // Removing the profile by ID
+            await res.id.remove();
+            // Message back
+            res.json({ message: "Deleted This profile" });
+        } catch (err) {
+            res.status(500).json({ message: err.message });
         }
     }
 };

@@ -4,6 +4,6 @@ const serverStatus = (req, res) => {
         message: "The API is up and running",
         info: "The endpoint may be not valid or you are in the Root"
     });
-}
+};
 
 module.exports = serverStatus;
