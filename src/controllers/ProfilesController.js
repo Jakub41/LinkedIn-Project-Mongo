@@ -28,16 +28,19 @@ const ProfilesController = {
         }
     },
 
+    // To GET a profile by id
     async getByUserId(req, res) {
         // Send back the profile corresponding on the id
         res.json(res.id);
     },
 
+    // To GET a profile by username
     async getByUserName(req, res) {
         // Send back the profile corresponding on the username
         res.json(res.username);
     },
 
+    // To GET by username and generates the CV-PDF of the profile
     async getCvPdf(req, res) {
         pdfMaker();
     },
