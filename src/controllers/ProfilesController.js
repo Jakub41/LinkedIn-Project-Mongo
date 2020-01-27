@@ -48,12 +48,18 @@ const ProfilesController = {
     // To Create a new profile
     async createNew(req, res, next) {
         console.log(req.body);
-        // Profile init
-        const profile = new Profile({
-            ...req.body
-        });
 
         try {
+            // Check empty req.body
+            if (Object.keys(req.body).length === 0) {
+                throw new ErrorHandlers.ErrorHandler(500, "Nothing to create");
+            }
+
+            // Profile init model
+            const profile = new Profile({
+                ...req.body
+            });
+
             // Await the save
             const newProfile = await profile.save();
             // If save fail send error via handler
