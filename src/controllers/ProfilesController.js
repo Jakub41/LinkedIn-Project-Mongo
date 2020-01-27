@@ -68,13 +68,14 @@ const ProfilesController = {
 
     async uploadPicture(req, res) {
         try {
+            // Check if any file is uploading
             if (!req.file) {
                 throw new ErrorHandlers.ErrorHandler(
                     500,
                     "No picture to upload has been provided"
                 );
             }
-
+            // File provided transform to valid URL
             req.file =
                 req.protocol +
                 "://" +
@@ -82,6 +83,7 @@ const ProfilesController = {
                 "/images/" +
                 req.file.filename;
 
+            // Find Username and update the req.body fields
             const newProfileUrl = await Profile.findOneAndUpdate(
                 { username: res.username.username },
                 {
@@ -89,11 +91,14 @@ const ProfilesController = {
                 }
             );
 
+            // Error check
             if (!newProfileUrl)
                 throw new ErrorHandlers.ErrorHandler(500, "Upload failed");
 
+            // Saving
             newProfileUrl.save();
 
+            // Results sent it back
             res.json({
                 username: res.username.username,
                 message: "Image URL updated",
@@ -110,7 +115,7 @@ const ProfilesController = {
             if (Object.keys(req.body).length === 0) {
                 throw new ErrorHandlers.ErrorHandler(500, "Nothing to update");
             } else {
-                // Find
+                // Find id and update the fields
                 const updatedProfile = await Profile.findByIdAndUpdate(
                     { _id: res.id._id },
                     { updatedAt: new Date() },
