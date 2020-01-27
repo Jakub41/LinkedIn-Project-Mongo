@@ -27,9 +27,8 @@ const upload = multer({
     fileFilter: (req, file, callback) => {
         const ext = path.extname(file.originalname).toLowerCase();
         if (ext !== ".png" && ext !== ".jpg" && ext !== ".jpeg") {
-            throw new ErrorHandlers.ErrorHandler(
-                500,
-                "Picture upload: .png .jpg .jpeg are the only valid extensions"
+            return callback(
+                new Error("Not valid file extension, allowed: .jpg, .png .jpeg")
             );
         }
         callback(null, true);
