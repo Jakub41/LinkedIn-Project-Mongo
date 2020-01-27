@@ -27,17 +27,17 @@ router.get(
     ProfilesCtrl.getByUserName
 );
 
+router.get(
+    "/username/:username",
+    CommonReq.getByUserName,
+    ProfilesCtrl.getByUserName
+);
+
+// GET Profile CV as PDF => <URL>/api/v1/profiles/:username/cv-pdf
+router.get("/:username/cv-pdf", CommonReq.getByUserName, ProfilesCtrl.getCvPdf);
+
 // POST creates a new profile => <url>api/v1/profiles
 router.post("/", ProfilesCtrl.createNew);
-
-// POST Profile picture => <URL>/api/v1/profiles/:username/upload
-router.post(
-    "/:username/upload",
-    CommonReq.getByUserName,
-    Upload.upload.single("file"),
-    ProfilesCtrl.uploadPicture,
-
-);
 
 // PATCH updates just the fields we need instead of PUT which updates the whole chunk
 router.patch("/:id", CommonReq.getById, ProfilesCtrl.update);
