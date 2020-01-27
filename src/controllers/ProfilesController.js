@@ -151,6 +151,7 @@ const ProfilesController = {
         }
     },
 
+    // To DELETE a profile
     async delete(req, res) {
         try {
             // Removing the profile by ID
