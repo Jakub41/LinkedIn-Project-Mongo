@@ -1,7 +1,7 @@
 // Profile model
 const { Profile } = require("../models");
 // Error handling
-const { ErrorHandlers, pdfMaker } = require("../utilities");
+const { ErrorHandlers } = require("../utilities");
 
 // Profiles Controller
 const ProfilesController = {
@@ -41,9 +41,7 @@ const ProfilesController = {
     },
 
     // To GET by username and generates the CV-PDF of the profile
-    async getCvPdf(req, res) {
-        pdfMaker();
-    },
+    async getCvPdf(req, res) {},
 
     // To Create a new profile
     async createNew(req, res, next) {

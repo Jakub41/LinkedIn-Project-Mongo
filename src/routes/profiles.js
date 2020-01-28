@@ -22,13 +22,7 @@ router.get("/:id", CommonReq.getById, ProfilesCtrl.getByUserId);
 
 // GET one profile by userName => <URL>/api/v1/profiles/:username
 router.get(
-    "/username/:username",
-    CommonReq.getByUserName,
-    ProfilesCtrl.getByUserName
-);
-
-router.get(
-    "/username/:username",
+    "/user/:username",
     CommonReq.getByUserName,
     ProfilesCtrl.getByUserName
 );
@@ -48,6 +42,7 @@ router.post(
 );
 
 // PATCH updates just the fields we need instead of PUT which updates the whole chunk
+// => <url>api/v1/profiles/:id
 router.patch("/:id", CommonReq.getById, ProfilesCtrl.update);
 
 // DELETE removes a profile by ID => <url>api/v1/profiles/:id
