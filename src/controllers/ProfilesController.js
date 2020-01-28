@@ -1,7 +1,7 @@
 // Profile model
 const { Profile } = require("../models");
 // Error handling
-const { ErrorHandlers } = require("../utilities");
+const { ErrorHandlers, pdfMaker } = require("../utilities");
 
 // Profiles Controller
 const ProfilesController = {
