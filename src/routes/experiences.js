@@ -1,13 +1,26 @@
 // Express
 const express = require("express");
-// model
-// const db = require("../models/models.index");
+
+// Controller
+const { ExperiencesCtrl } = require("../controllers");
+
+// Middleware CommonReq => common requests to get by id or username
+// Allows to not write again same requests for common GET :params
+const { CommonReq } = require("../middlewares");
+
+// Upload Picture utility
+const { Upload } = require("../utilities");
+
 // Router
 const router = express.Router();
 
-// To test if all running ok
-router.get("/", async (req, res) => {
-    res.send('OK');
-});
+// Experiences CRUD
+router.get("/:username", CommonReq.getByUserName, ExperiencesCtrl.getAll);
+router.get("/:username/experience/:experienceId", CommonReq.getByUserName, ExperiencesCtrl.getById);
+router.post("/:username", CommonReq.getByUserName, ExperiencesCtrl.createNew);
+router.patch("/:username/experience/:experienceId", CommonReq.getByUserName, ExperiencesCtrl.update);
+router.delete("/:username/experience/:experienceId", CommonReq.getByUserName, ExperiencesCtrl.delete);
+
+
 
 module.exports = router;
