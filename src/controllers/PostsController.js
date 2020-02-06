@@ -32,13 +32,13 @@ const PostsController = {
             const postsFromUsername = await Profile.aggregate([
                 {
                     $match: {
-                        username: res.username.username
+                        _id: res.id._id
                     }
                 },
                 {
                     $lookup: {
                         from: "posts",
-                        localField: "username",
+                        localField: "profile",
                         foreignField: "username",
                         as: "posts"
                     }
@@ -72,16 +72,32 @@ const PostsController = {
             if (Object.keys(req.body).length === 0) {
                 throw new ErrorHandlers.ErrorHandler(500, "Nothing to create");
             }
+            // Req param
+            const profileId = res.id._id;
 
             // Req body
             const newPost = req.body;
 
             // Creating the new post and updating the profile ref
             const addNewPost = await Post.create(newPost);
-            addNewPost.username = req.body.username;
 
+            // Updating Post with profile ID
+            const updateIDPost = await Post.findOneAndUpdate(
+                { _id: addNewPost._id },
+                { $set: { profile: profileId } }
+            );
+
+            // Error check
+            if (!updateIDPost) {
+                throw new ErrorHandlers.ErrorHandler(
+                    500,
+                    "Profile ID cannot be saved"
+                );
+            }
+
+            // Updating the profile posts[id]
             const updateProfile = await Profile.findOneAndUpdate(
-                { username: res.username.username },
+                { _id: res.id._id },
                 { $push: { posts: addNewPost._id } },
                 { new: true }
             );
@@ -96,7 +112,7 @@ const PostsController = {
 
             // Response
             res.status(200).json({
-                username: res.username.username,
+                _id: res.id._id,
                 newPost: newPost
             });
         } catch (err) {
@@ -104,8 +120,22 @@ const PostsController = {
         }
     },
 
-    async delete(req,res) {
-
+    async delete(req, res) {
+        try {
+            // Match with username and pull to remove
+            await Profile.findOneAndUpdate(
+                { username: res.username.username },
+                { $pull: { posts: { _id: req.params.postId } } },
+                err => {
+                    if (err) {
+                        throw new ErrorHandlers.ErrorHandler(500, err);
+                    }
+                    res.json({ Message: "Deleted" });
+                }
+            );
+        } catch (error) {
+            res.status(500).send(error);
+        }
     }
 };
 

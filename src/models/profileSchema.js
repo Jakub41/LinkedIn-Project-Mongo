@@ -123,6 +123,8 @@ const profileSchema = {
     }
 };
 
+
+
 const collectionName = "profile";
 const profileSchemaModel = Connect.Schema(profileSchema);
 const Profile = Connect.model(collectionName, profileSchemaModel);

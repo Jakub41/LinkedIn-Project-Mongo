@@ -16,10 +16,9 @@ const postSchema = {
         sparse: false
     },
 
-    username: {
-        type: Connect.Schema.Types.String,
+    profile: {
+        type: Connect.Schema.Types.ObjectId,
         ref: "Profile",
-        required: true
     },
 
     image: {
