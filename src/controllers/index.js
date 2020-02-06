@@ -1,4 +1,5 @@
 module.exports = {
     ProfilesCtrl: require("./ProfilesController"),
-    ExperiencesCtrl: require("./ExperiencesController")
+    ExperiencesCtrl: require("./ExperiencesController"),
+    PostsCtrl: require("./PostsController")
 };

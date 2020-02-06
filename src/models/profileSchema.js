@@ -3,6 +3,11 @@
 const { Connect } = require("../db");
 const { isEmail } = require("validator");
 
+const postSchema = {
+    type: Connect.Schema.Types.ObjectId,
+    ref: "Post"
+};
+
 const experienceSchema = {
     role: {
         type: String,
@@ -103,6 +108,7 @@ const profileSchema = {
     },
 
     experience: [experienceSchema],
+    posts: [postSchema],
 
     createdAt: {
         type: Date,

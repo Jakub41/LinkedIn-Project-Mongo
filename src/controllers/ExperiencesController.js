@@ -39,7 +39,7 @@ const ExperiencesController = {
 
     async getById(req, res) {
         try {
-            const profileWithExperiences = await Student.aggregate([
+            const profileWithExperiences = await Profile.aggregate([
                 { $match: { username: res.username.username } },
                 {
                     $unwind: "$experience"
