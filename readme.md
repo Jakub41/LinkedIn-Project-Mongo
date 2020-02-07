@@ -5,22 +5,45 @@
 ```
 📦src
  ┣ 📂config
- ┃ ┗ 📜config.js
+ ┃ ┣ 📜config.js
+ ┃ ┗ 📜index.js
+ ┣ 📂controllers
+ ┃ ┣ 📜CommentsController.js
+ ┃ ┣ 📜ExperiencesController.js
+ ┃ ┣ 📜PostsController.js
+ ┃ ┣ 📜ProfilesController.js
+ ┃ ┗ 📜index.js
  ┣ 📂db
- ┃ ┗ 📜dbConnect.js
+ ┃ ┣ 📜dbConnect.js
+ ┃ ┗ 📜index.js
  ┣ 📂helpers
- ┃ ┗ 📜helpers.index.js
+ ┃ ┗ 📜index.js
  ┣ 📂middlewares
- ┃ ┗ 📜middleware.index.js
+ ┃ ┣ 📜commonRequests.js
+ ┃ ┣ 📜errors.js
+ ┃ ┣ 📜index.js
+ ┃ ┗ 📜serverStatus.js
  ┣ 📂models
- ┃ ┣ 📜models.index.js
- ┃ ┗ 📜profile.model.js
+ ┃ ┣ 📜commentSchema.js
+ ┃ ┣ 📜index.js
+ ┃ ┣ 📜postSchema.js
+ ┃ ┗ 📜profileSchema.js
  ┣ 📂routes
+ ┃ ┣ 📜comments.js
  ┃ ┣ 📜experiences.js
+ ┃ ┣ 📜index.js
  ┃ ┣ 📜posts.js
- ┃ ┣ 📜profiles.js
- ┃ ┗ 📜routes.index.js
- ┗ 📂utilities
- ┃ ┗ 📜utility.index.js
+ ┃ ┗ 📜profiles.js
+ ┣ 📂templates
+ ┃ ┣ 📜headshot.jpg
+ ┃ ┣ 📜index.html
+ ┃ ┗ 📜style.css
+ ┣ 📂utilities
+ ┃ ┣ 📜error.js
+ ┃ ┣ 📜imgUpload.js
+ ┃ ┣ 📜index.js
+ ┃ ┣ 📜pdfGenerator.js
+ ┃ ┗ 📜pdfTemplate.js
+ ┗ 📜.DS_Store
  server.js
 ```

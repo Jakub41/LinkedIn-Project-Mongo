@@ -77,14 +77,16 @@ const CommentsController = {
     // Get one comment for post
     async getPostOneComment(req, res) {
         try {
+            // Find the comment
             const comment = await Comment.findOne({
                 post: res.id._id,
                 _id: req.params.commentId
             });
-
+            // Not comment error
             if (!comment) {
                 throw new ErrorHandlers.ErrorHandler(404, "No comment");
             }
+            // Response
             res.status(200).json({ postId: res.id._id, comment });
         } catch (err) {
             res.status(500).json(err);
