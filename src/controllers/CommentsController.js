@@ -74,15 +74,15 @@ const CommentsController = {
         }
     },
 
-    // Get pne comment for post
-    async getProfileOneComment(req, res) {
+    // Get one comment for post
+    async getPostOneComment(req, res) {
         try {
             const comment = await Comment.findOne({
                 post: res.id._id,
                 _id: req.params.commentId
             });
 
-            if (comment.length === 0) {
+            if (!comment) {
                 throw new ErrorHandlers.ErrorHandler(404, "No comment");
             }
             res.status(200).json({ postId: res.id._id, comment });
@@ -157,7 +157,61 @@ const CommentsController = {
         } catch (err) {
             res.status(500).json(err);
         }
+    },
+
+    // Update comment
+    async update(req, res) {
+        try {
+            // Check for an empty body
+            if (Object.keys(req.body).length === 0) {
+                throw new ErrorHandlers.ErrorHandler(500, "Nothing to create");
+            }
+
+            // Req body & UpdatedAt date/time
+            const updateComment = req.body.comment;
+            const updatedAt = Date.now();
+
+            // Update comment
+            const commentToUpdate = await Comment.updateOne(
+                {
+                    _id: req.params.commentId
+                },
+                {
+                    $set: {
+                        comment: updateComment,
+                        updatedAt: updatedAt
+                    }
+                }
+            );
+
+            // Check and send
+            if (commentToUpdate)
+                res.json({ Message: "Updated", updatedComment: updateComment });
+            else throw new ErrorHandlers.ErrorHandler(500, "Nothing to update");
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    },
+
+    // Delete comment
+    async delete(req, res) {
+        try {
+            // Match with ID and pull to remove from post
+            await Post.findOneAndUpdate(
+                { _id: res.id._id },
+                { $pull: { comments: req.params.commentId } }
+            );
+
+            // Removing from Posts collection
+            await Comment.remove({ _id: req.params.commentId });
+
+            // Response
+            res.json({ Message: "Deleted" });
+        } catch (error) {
+            res.status(500).json(error);
+        }
     }
+
 };
 
 module.exports = CommentsController;

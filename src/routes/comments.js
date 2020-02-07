@@ -14,7 +14,9 @@ const router = express.Router();
 // CRUD
 router.get("/", CommentsCtrl.getAll);
 router.get("/:postId", CommonReq.getPostById , CommentsCtrl.getPostAllComments);
-router.get("/:postId/comment/:commentId", CommonReq.getPostById , CommentsCtrl.getProfileOneComment);
+router.get("/:postId/comment/:commentId", CommonReq.getPostById , CommentsCtrl.getPostOneComment);
 router.post("/:postId", CommonReq.getPostById , CommentsCtrl.createNew);
+router.patch("/:postId/comment/:commentId", CommonReq.getPostById , CommentsCtrl.update);
+router.delete("/:postId/comment/:commentId", CommonReq.getPostById , CommentsCtrl.delete);
 
 module.exports = router;
