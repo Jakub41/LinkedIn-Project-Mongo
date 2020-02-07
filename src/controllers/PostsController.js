@@ -110,7 +110,7 @@ const PostsController = {
             );
 
             // Error Check
-            if (addNewPost.length === 0 && updateProfile.lenght === 0) {
+            if (addNewPost.length === 0 && updateProfile.length === 0) {
                 throw new ErrorHandlers.ErrorHandler(
                     500,
                     "Not possible to create a new post"
