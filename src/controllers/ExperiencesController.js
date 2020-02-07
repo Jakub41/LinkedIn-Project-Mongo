@@ -2,6 +2,8 @@
 const { Profile } = require("../models");
 // Error handling
 const { ErrorHandlers } = require("../utilities");
+// MongoDB
+const { ObjectID } = require("mongodb");
 
 const ExperiencesController = {
     async getAll(req, res) {
@@ -61,10 +63,29 @@ const ExperiencesController = {
             ]);
 
             if (profileWithExperiences.length > 0) {
-                res.status(200).json({ profileExperience: profileWithExperiences });
+                res.status(200).json({
+                    profileExperience: profileWithExperiences
+                });
             } else {
                 throw new ErrorHandlers.ErrorHandler(500, "No data");
             }
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    },
+
+    // Get one
+    async getOneExp(req, res) {
+        try {
+            const experience = await Profile.findOne({
+                _id: res.id._id,
+                experience: { _id: req.params.experienceId }
+            });
+
+            if (experience.length === 0) {
+                throw new ErrorHandlers.ErrorHandler(404, "No experience");
+            }
+            res.status(200).json({ profileId: res.id._id, experience });
         } catch (err) {
             res.status(500).json(err);
         }

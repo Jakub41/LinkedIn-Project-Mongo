@@ -32,7 +32,7 @@ const commentSchema = {
 };
 
 const collectionName = "comment";
-const commentSchemaModel = mongoose.Schema(commentSchema);
-const Comment = mongoose.model(collectionName, commentSchemaModel);
+const commentSchemaModel = Connect.Schema(commentSchema);
+const Comment = Connect.model(collectionName, commentSchemaModel);
 
 module.exports = Comment;
