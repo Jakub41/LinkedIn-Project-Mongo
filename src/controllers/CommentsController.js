@@ -1,5 +1,5 @@
 // Profile model
-const { Post, Comment } = require("../models");
+const { Profile, Post, Comment } = require("../models");
 // Error handling
 const { ErrorHandlers } = require("../utilities");
 
@@ -98,6 +98,19 @@ const CommentsController = {
             if (Object.keys(req.body).length === 0) {
                 throw new ErrorHandlers.ErrorHandler(500, "Nothing to create");
             }
+
+            // Check username exist
+            const username = await Profile.findOne({
+                username: req.body.username
+            });
+
+            if (!username) {
+                throw new ErrorHandlers.ErrorHandler(
+                    404,
+                    "Username was not found"
+                );
+            }
+
             // Req param
             const postId = res.id._id;
 
