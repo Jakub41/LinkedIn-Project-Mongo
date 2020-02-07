@@ -11,6 +11,7 @@ const router = express.Router();
 router.get("/", PostsCtrl.getAll);
 router.get("/:id", CommonReq.getById, PostsCtrl.getAllFromProfile);
 router.post("/:id", CommonReq.getById, PostsCtrl.createNew);
-router.delete("/:profileId/post/:postId", CommonReq.getByUserName, PostsCtrl.delete);
+router.patch("/:id/post/:postId", CommonReq.getById, PostsCtrl.update);
+router.delete("/:id/post/:postId", CommonReq.getById, PostsCtrl.delete);
 
 module.exports = router;

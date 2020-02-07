@@ -29,13 +29,18 @@ const PostsController = {
 
     async getAllFromProfile(req, res) {
         try {
+            // Getting all the posts of one profile
             const postsFromUsername = await Profile.aggregate([
                 {
+                    // Find match by ID of the profile
                     $match: {
                         _id: res.id._id
                     }
                 },
                 {
+                    // Looking for a match between 2 collections
+                    // by profile on Post and foreign username on Profile collection
+                    // left outer join
                     $lookup: {
                         from: "posts",
                         localField: "profile",
@@ -44,6 +49,7 @@ const PostsController = {
                     }
                 },
                 {
+                    // Fields to show on response
                     $project: {
                         username: 1,
                         posts: 1,
@@ -55,6 +61,7 @@ const PostsController = {
                 }
             ]);
 
+            // Check and result
             if (postsFromUsername.length > 0) {
                 res.json({ postsFromUsername: postsFromUsername });
             } else {
@@ -103,10 +110,10 @@ const PostsController = {
             );
 
             // Error Check
-            if (!addNewPost && !updateProfile) {
+            if (addNewPost.length === 0 && updateProfile.lenght === 0) {
                 throw new ErrorHandlers.ErrorHandler(
                     500,
-                    "Not possible create a new post"
+                    "Not possible to create a new post"
                 );
             }
 
@@ -120,21 +127,63 @@ const PostsController = {
         }
     },
 
+    async update(req, res) {
+        try {
+            // Check for an empty body
+            if (Object.keys(req.body).length === 0) {
+                throw new ErrorHandlers.ErrorHandler(500, "Nothing to create");
+            }
+
+            // Req body & UpdatedAt date/time
+            const updatePostText = req.body.text;
+            const updatedAt = Date.now();
+
+            // Update post
+            const postToUpdate = await Post.updateOne(
+                {
+                    _id: req.params.postId
+                },
+                {
+                    $set: {
+                        text: updatePostText,
+                        updatedAt: updatedAt
+                    }
+                }
+            );
+
+            // Check and send
+            if (postToUpdate)
+                res.json({ Message: "Updated", postUpdated: req.body });
+            else throw new ErrorHandlers.ErrorHandler(500, "Nothing to update");
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    },
+
     async delete(req, res) {
         try {
-            // Match with username and pull to remove
+            // Match with username and pull to remove from Profile the ObjectId
             await Profile.findOneAndUpdate(
-                { username: res.username.username },
-                { $pull: { posts: { _id: req.params.postId } } },
+                { _id: res.id._id },
+                { $pull: { posts: req.params.postId } },
                 err => {
                     if (err) {
                         throw new ErrorHandlers.ErrorHandler(500, err);
                     }
-                    res.json({ Message: "Deleted" });
                 }
             );
+
+            // Removing from Posts collection
+            await Post.remove({ _id: req.params.postId }, err => {
+                if (err) {
+                    throw new ErrorHandlers.ErrorHandler(500, err);
+                }
+            });
+
+            // Response
+            res.json({ Message: "Deleted" });
         } catch (error) {
-            res.status(500).send(error);
+            res.status(500).json(error);
         }
     }
 };
