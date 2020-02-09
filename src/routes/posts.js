@@ -7,7 +7,7 @@ const { CommonReq } = require("../middlewares");
 // Router
 const router = express.Router();
 
-// To test if all running ok
+// Post CRUD
 router.get("/", PostsCtrl.getAll);
 router.get("/:id", CommonReq.getById, PostsCtrl.getAllFromProfile);
 router.post("/:id", CommonReq.getById, PostsCtrl.createNew);
