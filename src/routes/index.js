@@ -12,6 +12,7 @@ router.use(BaseURL + "experiences", require("./experiences"));
 router.use(BaseURL + "posts", require("./posts"));
 router.use(BaseURL + "comments", require("./comments"));
 router.use(BaseURL + "search", require("./Search"));
+router.use(BaseURL + "user", require("./userAuth"));
 
 // Exporting the Index Router
 module.exports = router;

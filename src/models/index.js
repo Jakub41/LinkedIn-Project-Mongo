@@ -2,5 +2,6 @@
 module.exports = {
     Profile: require("./profileSchema"),
     Post: require("./postSchema"),
-    Comment: require("./commentSchema")
+    Comment: require("./commentSchema"),
+    User: require("./userSchema")
 };

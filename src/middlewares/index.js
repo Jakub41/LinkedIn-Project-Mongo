@@ -2,5 +2,7 @@
 module.exports = {
     Errors: require("./errors"),
     ServerStatus: require("./serverStatus"),
-    CommonReq: require("./commonRequests")
+    CommonReq: require("./commonRequests"),
+    AuthToken: require("./authToken"),
+    Auth: require("./Auth")
 };

@@ -2,5 +2,6 @@
 module.exports = {
     ErrorHandlers: require("./error"),
     Upload: require("./imgUpload"),
-    PdfMaker: require("./pdfGenerator")
+    PdfMaker: require("./pdfGenerator"),
+    Roles: require("./roles")
 };

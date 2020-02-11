@@ -2,8 +2,8 @@
 const { Config } = require("./src/config");
 const path = require("path");
 
-// Errors
-const { Errors, ServerStatus } = require("./src/middlewares");
+// Middleware
+const { Errors, ServerStatus, AuthToken } = require("./src/middlewares");
 const Err = require("./src/utilities");
 
 // Requiring libs
@@ -28,6 +28,9 @@ app.use(express.json());
 
 // Logs
 app.use(morgan("dev"));
+
+// Auth
+app.use(AuthToken);
 
 // Main Routing
 app.use(require("./src/routes"));

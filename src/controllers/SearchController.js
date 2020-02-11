@@ -16,7 +16,9 @@ const SearchController = {
             if (ln) query.$or.push({ surname: ln });
             if (cp) query.$or.push({ "experience.company": cp });
 
-            const searchResult = Profile.find(query);
+            const searchResult = Profile.find(query, docs => {
+                return docs
+            });
 
             if ((await searchResult).length === 0)
                 throw new ErrorHandlers.ErrorHandler(

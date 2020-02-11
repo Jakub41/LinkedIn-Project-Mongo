@@ -3,5 +3,7 @@ module.exports = {
     ExperiencesCtrl: require("./ExperiencesController"),
     PostsCtrl: require("./PostsController"),
     CommentsCtrl: require("./CommentsController"),
-    SearchCtrl: require("./SearchController")
+    SearchCtrl: require("./SearchController"),
+    UserAuthCtrl: require("./UserAuthController"),
+    UserCtrl: require("./UserController")
 };
