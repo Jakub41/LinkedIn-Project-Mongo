@@ -1,12 +1,11 @@
-// Env
-const { Config } = require("../config");
 // Error
 const { ErrorHandlers } = require("../utilities");
 // User model
 const { User } = require("../models");
-// JWT Auth
-const jwt = require("jsonwebtoken");
+// Bcrypt
 const bcrypt = require("bcrypt");
+// Helper
+const { Token } = require("../helpers");
 
 // Hashing the password on register new user
 // 10 =>  2^10 key expansion rounds
@@ -40,13 +39,7 @@ const signup = async (req, res, next) => {
         // Assign token
         // We need private secret key in the ENV
         // to compare auth
-        const accessToken = jwt.sign(
-            { userId: newUser._id },
-            Config.jwt.secret,
-            {
-                expiresIn: "1d"
-            }
-        );
+        const accessToken = Token.getToken({ userId: newUser._id });
 
         // New user token
         newUser.accessToken = accessToken;
@@ -90,27 +83,19 @@ const login = async (req, res, next) => {
             );
 
         // User token auth
-        const accessToken = jwt.sign(
-            { userId: user._id },
-            Config.jwt.secret,
-            {
-                expiresIn: "1d"
-            }
-        );
+        const accessToken = Token.getToken({ userId: user._id });
 
         // Find user with token
         await User.findByIdAndUpdate(user._id, { accessToken });
 
         // Not user
         if (!User)
-            return next(
-                new ErrorHandlers.ErrorHandler(401, "User not found")
-            );
+            return next(new ErrorHandlers.ErrorHandler(401, "User not found"));
         // Response
         res.status(200).json({
             message: "Logged in",
             data: { email: user.email, role: user.role },
-            accessToken,
+            accessToken
         });
     } catch (err) {
         next(err);
