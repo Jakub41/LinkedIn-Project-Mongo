@@ -26,6 +26,7 @@ const grantAccess = (action, resource) => {
 // Allow if user logged in
 const allowIfLoggedin = async (req, res, next) => {
     try {
+        console.log("LOCALS", res.locals)
         const user = res.locals.loggedInUser;
         if (!user)
             throw new ErrorHandlers.ErrorHandler(

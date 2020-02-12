@@ -61,7 +61,7 @@ const signup = async (req, res, next) => {
             message: "User created successfully"
         });
     } catch (err) {
-        next(error);
+        next(err);
     }
 };
 
@@ -113,7 +113,7 @@ const login = async (req, res, next) => {
             accessToken,
         });
     } catch (err) {
-        next(error);
+        next(err);
     }
 };
 

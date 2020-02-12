@@ -2,10 +2,11 @@
 const { Config } = require("../config");
 // Utilities
 const { ErrorHandlers } = require("../utilities");
-// JWT
-const jwt = require("jsonwebtoken");
 // Model
 const { User } = require("../models");
+// JWT
+const jwt = require("jsonwebtoken");
+
 
 // Access token header
 const accessToken = async (req, res, next) => {
