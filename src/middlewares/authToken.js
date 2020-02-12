@@ -7,18 +7,22 @@ const { User } = require("../models");
 // JWT
 const jwt = require("jsonwebtoken");
 
-
 // Access token header
 const accessToken = async (req, res, next) => {
-    // Token pass in header
-    if (req.headers["x-access-token"]) {
-        // Token from header
-        const accessToken = req.headers["x-access-token"];
+    // Token pass in header as Bearer authorization
+    if (req.headers["authorization"]) {
+        // Token from header Bearer in front
+        // Getting off of it
+        const accessToken = req.headers["authorization"];
+        // Token comes with
+        const token = accessToken.split(" ")[1];
+        let userId = "";
+        let exp = "";
         // Token verification with user provided
-        const { userId, exp } = await jwt.verify(
-            accessToken,
-            Config.jwt.secret
-        );
+        const d = await jwt.verify(token, Config.jwt.secret, d => {
+            userId = d.userId;
+            exp = d.exp;
+        });
         // Check if token has expired
         if (exp < Date.now().valueOf() / 1000) {
             throw new ErrorHandlers.ErrorHandler(
