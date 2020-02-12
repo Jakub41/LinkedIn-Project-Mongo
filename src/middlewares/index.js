@@ -4,5 +4,7 @@ module.exports = {
     ServerStatus: require("./serverStatus"),
     CommonReq: require("./commonRequests"),
     AuthToken: require("./authToken"),
-    Auth: require("./Auth")
+    Auth: require("./Auth"),
+    Validation: require("./validator"),
+    isValidPsw: require("./isValidPsw")
 };

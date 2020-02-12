@@ -6,6 +6,8 @@ const { User } = require("../models");
 const bcrypt = require("bcrypt");
 // Helper
 const { Token } = require("../helpers");
+// Middleware
+const { isValidPsw } = require("../middlewares");
 
 // Hashing the password on register new user
 // 10 =>  2^10 key expansion rounds
@@ -23,6 +25,15 @@ const signup = async (req, res, next) => {
     try {
         // Body
         const { email, password, role } = req.body;
+
+        // Validate the password format
+        if (!isValidPsw(password))
+            return next(
+                new ErrorHandlers.ErrorHandler(
+                    401,
+                    `Password >${password}< is not in the right format: at least 8 chars long but max 64; min 1 uppercase; min 1 lowercase; min 1 digits; min 1 symbol; no whitespace`
+                )
+            );
 
         // Password hashed
         const hashedPassword = await hashPassword(password);

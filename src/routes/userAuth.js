@@ -5,7 +5,9 @@ const router = express.Router();
 // Controller User Auth
 const { UserCtrl, UserAuthCtrl } = require("../controllers");
 // Auth middleware
-const { Auth } = require("../middlewares");
+const { Auth, Validation, isValidPsw } = require("../middlewares");
+// Validation
+const { check } = require("express-validator");
 
 // Auth we specify that we only want to grant access to roles
 // that are permitted to perform the specified action on the provided resource
@@ -13,6 +15,8 @@ const { Auth } = require("../middlewares");
 router.post("/signup", UserAuthCtrl.signup);
 // Login user access
 router.post("/login", UserAuthCtrl.login);
+// Password reset
+
 // GET one user access
 router.get(
     "/:userId",
