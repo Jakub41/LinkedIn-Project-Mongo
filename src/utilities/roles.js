@@ -9,23 +9,23 @@ exports.roles = (() => {
     // Basic minimum access
     accessCtrl
         .grant("basic")
-        .readOwn("user")
-        .updateOwn("user")
-        .deleteOwn("user")
+        .readOwn(["user", "profile"])
+        .updateOwn(["user", "profile", "post", "comment"])
+        .deleteOwn(["user", "profile", "post", "comment"])
 
     // Moderator same as basic but can read any profile
     accessCtrl
         .grant("moderator")
         .extend("basic")
-        .readAny("user");
+        .readAny(["user", "profile", "post", "comment"]);
 
     // Admin superpowers
     accessCtrl
         .grant("admin")
         .extend("basic")
         .extend("moderator")
-        .updateAny("user")
-        .deleteAny("user");
+        .updateAny(["user", "profile", "post", "comment"])
+        .deleteAny(["user", "profile", "post", "comment"]);
 
     return accessCtrl;
 })();
