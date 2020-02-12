@@ -23,21 +23,21 @@ router.get(
 router.get(
     "/",
     Auth.allowIfLoggedin,
-    Auth.grantAccess("readAny", "profile"),
+    Auth.grantAccess("readAny", "user"),
     UserCtrl.getUsers
 );
 // PUT update user
 router.put(
     "/:userId",
     Auth.allowIfLoggedin,
-    Auth.grantAccess("updateAny", "profile"),
+    Auth.grantAccess(["updateAny", "updateOwn"], "user"),
     UserCtrl.updateUser
 );
 // DELETE user
 router.delete(
     "/:userId",
     Auth.allowIfLoggedin,
-    Auth.grantAccess("deleteAny", "profile"),
+    Auth.grantAccess(["deleteAny", "deleteOwn"], "user"),
     UserCtrl.deleteUser
 );
 

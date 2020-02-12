@@ -16,6 +16,7 @@ module.exports = {
     },
     // JWT
     jwt: {
-        secret: process.env.JWT_SECRET
+        secret: process.env.JWT_SECRET,
+        expiration: process.env.JWT_EXPIRATION
     }
 };
