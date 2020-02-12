@@ -5,6 +5,11 @@ const AccessControl = require("accesscontrol");
 const accessCtrl = new AccessControl();
 
 // Roles access
+// Here adding the access rules and to what we give access to a specific role
+// Basic, Moderator, Admin
+// Admin => Read/Write full powers
+// Moderator => Read access everywhere
+// Basic => Read/write own information
 exports.roles = (() => {
     // Basic minimum access
     accessCtrl
