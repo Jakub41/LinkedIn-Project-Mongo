@@ -14,15 +14,18 @@ const accessToken = async (req, res, next) => {
         // Token from header Bearer in front
         // Getting off of it
         const accessToken = req.headers["authorization"];
-        // Token comes with
         const token = accessToken.split(" ")[1];
+
+        // User and expiration
         let userId = "";
         let exp = "";
+
         // Token verification with user provided
         const d = await jwt.verify(token, Config.jwt.secret, d => {
             userId = d.userId;
             exp = d.exp;
         });
+
         // Check if token has expired
         if (exp < Date.now().valueOf() / 1000) {
             throw new ErrorHandlers.ErrorHandler(
