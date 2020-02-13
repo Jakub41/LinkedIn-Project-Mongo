@@ -1,6 +1,25 @@
 // Access controls roles
 const AccessControl = require("accesscontrol");
 
+let grantsObject = {
+    admin: {
+        user: {
+            'create:any': ['*'],
+            'read:any': ['*'],
+            'update:any': ['*'],
+            'delete:any': ['*']
+        }
+    },
+    basic: {
+        user: {
+            'create:own': ['*'],
+            'read:own': ['*'],
+            'update:own': ['*'],
+            'delete:own': ['*']
+        }
+    }
+};
+
 // Init
 const accessCtrl = new AccessControl();
 
@@ -11,25 +30,7 @@ const accessCtrl = new AccessControl();
 // Moderator => Read access everywhere
 // Basic => Read/write own information
 exports.roles = (() => {
-    // Basic minimum access
-    accessCtrl
-        .grant("basic")
-        .readOwn(["user", "profile"])
-        .updateOwn(["user", "profile", "post", "comment"])
-        .deleteOwn(["user", "profile", "post", "comment"])
-
-    // Moderator same as basic but can read any profile
-    accessCtrl
-        .grant("moderator")
-        .extend("basic")
-        .readAny(["user", "profile", "post", "comment"]);
-
-    // Admin superpowers
-    accessCtrl
-        .grant("admin")
-        .extend(["basic", "moderator"])
-        .updateAny(["user", "profile", "post", "comment"])
-        .deleteAny(["user", "profile", "post", "comment"]);
+    accessCtrl.setGrants(grantsObject);
 
     return accessCtrl;
 })();

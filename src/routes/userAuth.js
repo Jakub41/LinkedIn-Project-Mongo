@@ -34,14 +34,14 @@ router.get(
 router.put(
     "/:userId",
     Auth.allowIfLoggedin,
-    Auth.grantAccess(["updateAny", "updateOwn"], "user"),
+    Auth.grantAccess("updateOwn", "user"),
     UserCtrl.updateUser
 );
 // DELETE user
 router.delete(
     "/:userId",
     Auth.allowIfLoggedin,
-    Auth.grantAccess(["deleteAny", "deleteOwn"], "user"),
+    Auth.grantAccess("deleteOwn", "user"),
     UserCtrl.deleteUser
 );
 

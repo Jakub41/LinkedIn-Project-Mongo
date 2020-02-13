@@ -9,34 +9,32 @@ const jwt = require("jsonwebtoken");
 
 // Access token header
 const accessToken = async (req, res, next) => {
-    // Token pass in header as Bearer authorization
-    if (req.headers["authorization"]) {
-        // Token from header Bearer in front
-        // Getting off of it
-        const accessToken = req.headers["authorization"];
-        const token = accessToken.split(" ");
-        const tk = token[1];
-        console.log("TOKEN without Bearer >> ", tk);
+    try {
+        if (req.headers["authorization"]) {
+            // Token from header Bearer in front
+            // Getting off of it
+            const accessToken = req.headers["authorization"];
+            const token = accessToken.split(" ");
+            const tk = token[1];
+            console.log("TOKEN without Bearer >> ", tk);
 
-        // User and expiration
-        let userid = "";
-        let exp = "";
+            // User and expiration
+            // let userid = "",
+            //     exp = "";
 
-        // Token verification with user provided
-        jwt.verify(tk, Config.jwt.secret, (err, d) => {
-            // If token is expired or else error is thrown out
-            if (err) return next(new ErrorHandlers.ErrorHandler(500, err));
+            // Token verification with user provided
+            const { userId } = await jwt.verify(tk, Config.jwt.secret);
 
-            userid = d.userId;
-            exp = d.exp;
-        });
-
-        // Logged in user find
-        res.locals.loggedInUser = await User.findById(userid);
-        next();
-    } else {
-        next();
+            // Logged in user find
+            res.locals.loggedInUser = await User.findById(userId);
+            next();
+        } else {
+            next();
+        }
+    } catch (err) {
+        next(err);
     }
+    // Token pass in header as Bearer authorization
 };
 
 module.exports = accessToken;
