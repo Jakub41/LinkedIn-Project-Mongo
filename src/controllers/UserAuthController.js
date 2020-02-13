@@ -113,4 +113,74 @@ const login = async (req, res, next) => {
     }
 };
 
-module.exports = { signup, login };
+// Reset password
+const passwordReset = async (req, res, next) => {
+    try {
+        // User credentials body
+        const { oldPassword, newPassword } = req.body;
+
+        if (!newPassword || !oldPassword) {
+            return next(new ErrorHandlers.ErrorHandler(401, "Api Bad use"));
+        }
+
+        // Validate the password format
+        if (!isValidPsw(newPassword))
+            return next(
+                new ErrorHandlers.ErrorHandler(
+                    401,
+                    `Password >${newPassword}< is not in the right format: at least 8 chars long but max 64; min 1 uppercase; min 1 lowercase; min 1 digits; min 1 symbol; no whitespace`
+                )
+            );
+        // Find the user by email
+        const user = await User.findOne({
+            accessToken: res.locals.loggedInUser.accessToken
+        });
+        // Check error user exist
+        if (!user)
+            return next(
+                new ErrorHandlers.ErrorHandler(
+                    401,
+                    "accessToken is Expired or not Valid"
+                )
+            );
+
+        // Validate the old password
+        const validPassword = await validatePassword(
+            oldPassword,
+            user.password
+        );
+
+        // Validation fail old password
+        if (!validPassword)
+            return next(
+                new ErrorHandlers.ErrorHandler(
+                    401,
+                    "Old Password is not correct"
+                )
+            );
+
+        // User access token update auth
+        const accessToken = Token.getToken({ userId: user._id });
+        //new password hashed
+        const hashedPassword = await hashPassword(newPassword);
+
+        // User Update
+        await User.findByIdAndUpdate(user._id, {
+            accessToken,
+            password: hashedPassword
+        });
+        // Not user
+        if (!User)
+            return next(new ErrorHandlers.ErrorHandler(401, "User not found"));
+        // Response
+        res.status(200).json({
+            message: "Password Changed successfully",
+            data: { email: user.email, role: user.role },
+            accessToken
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+module.exports = { signup, login, passwordReset };

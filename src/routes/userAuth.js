@@ -18,11 +18,7 @@ router.post("/login", UserAuthCtrl.login);
 // Password reset
 
 // GET one user access
-router.get(
-    "/:userId",
-    Auth.allowIfLoggedin,
-    UserCtrl.getUser
-);
+router.get("/:userId", Auth.allowIfLoggedin, UserCtrl.getUser);
 // GET users roles access
 router.get(
     "/",
@@ -30,6 +26,15 @@ router.get(
     Auth.grantAccess("readAny", "user"),
     UserCtrl.getUsers
 );
+
+// Reset password
+//to touch this autherization token is required
+router.post(
+    "/passwordReset",
+    Auth.allowIfLoggedin,
+    UserAuthCtrl.passwordReset
+);
+
 // PUT update user
 router.put(
     "/:userId",
