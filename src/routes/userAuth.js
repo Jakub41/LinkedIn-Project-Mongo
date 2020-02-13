@@ -28,7 +28,7 @@ router.get(
 );
 
 // Reset password
-//to touch this autherization token is required
+// authorization token is required
 router.post(
     "/passwordReset",
     Auth.allowIfLoggedin,
