@@ -4,18 +4,18 @@ const AccessControl = require("accesscontrol");
 let grantsObject = {
     admin: {
         user: {
-            'create:any': ['*'],
-            'read:any': ['*'],
-            'update:any': ['*'],
-            'delete:any': ['*']
+            "create:any": ["*"],
+            "read:any": ["*"],
+            "update:any": ["*"],
+            "delete:any": ["*"]
         }
     },
     basic: {
         user: {
-            'create:own': ['*'],
-            'read:own': ['*'],
-            'update:own': ['*'],
-            'delete:own': ['*']
+            "create:own": ["*"],
+            "read:own": ["*"],
+            "update:own": ["*"],
+            "delete:own": ["*"],
         }
     }
 };
