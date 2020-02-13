@@ -133,7 +133,7 @@ const passwordReset = async (req, res, next) => {
             );
         // Find the user by email
         const user = await User.findOne({
-            accessToken: res.locals.loggedInUser.accessToken
+            accessToken: res.locals.accessToken
         });
         // Check error user exist
         if (!user)

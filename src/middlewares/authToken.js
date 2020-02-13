@@ -16,17 +16,14 @@ const accessToken = async (req, res, next) => {
             const accessToken = req.headers["authorization"];
             const token = accessToken.split(" ");
             const tk = token[1];
-            console.log("TOKEN without Bearer >> ", tk);
-
-            // User and expiration
-            // let userid = "",
-            //     exp = "";
 
             // Token verification with user provided
             const { userId } = await jwt.verify(tk, Config.jwt.secret);
 
             // Logged in user find
             res.locals.loggedInUser = await User.findById(userId);
+            // Token logged user
+            res.locals.accessToken = tk;
             next();
         } else {
             next();
