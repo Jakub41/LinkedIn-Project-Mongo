@@ -5,5 +5,6 @@ const jwt = require("jsonwebtoken");
 
 // Token helper
 module.exports = {
-    getToken: user => jwt.sign(user, Config.jwt.secret, { expiresIn: parseInt(Config.jwt.expiration) })
+    getToken: user =>
+        jwt.sign(user, Config.jwt.secret, { expiresIn: Config.jwt.expiration })
 };
