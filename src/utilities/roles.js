@@ -27,8 +27,7 @@ exports.roles = (() => {
     // Admin superpowers
     accessCtrl
         .grant("admin")
-        .extend("basic")
-        .extend("moderator")
+        .extend(["basic", "moderator"])
         .updateAny(["user", "profile", "post", "comment"])
         .deleteAny(["user", "profile", "post", "comment"]);
 

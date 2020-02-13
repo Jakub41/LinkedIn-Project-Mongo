@@ -24,19 +24,13 @@ const accessToken = async (req, res, next) => {
 
         // Token verification with user provided
         jwt.verify(tk, Config.jwt.secret, (err, d) => {
-            if (err) throw new ErrorHandlers.ErrorHandler(500, err);
+            // If token is expired or else error is thrown out
+            if (err) return next(new ErrorHandlers.ErrorHandler(500, err));
 
             userid = d.userId;
             exp = d.exp;
         });
 
-        // Check if token has expired
-        if (exp < Date.now().valueOf() / 1000) {
-            throw new ErrorHandlers.ErrorHandler(
-                401,
-                "JWT token has expired, please login to obtain a new one"
-            );
-        }
         // Logged in user find
         res.locals.loggedInUser = await User.findById(userid);
         next();
