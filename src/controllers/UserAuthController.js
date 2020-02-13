@@ -119,6 +119,7 @@ const passwordReset = async (req, res, next) => {
         // User credentials body
         const { oldPassword, newPassword } = req.body;
 
+        // Check presence of passwords
         if (!newPassword || !oldPassword) {
             return next(new ErrorHandlers.ErrorHandler(401, "Api Bad use"));
         }

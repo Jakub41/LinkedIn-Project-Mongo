@@ -11,6 +11,7 @@ const UserController = {
     async getUsers(req, res, next) {
         // Find users
         const users = await User.find({});
+        const usersCount = await User.countDocuments();
         // Failed throw error
         if (!users)
             throw new ErrorHandlers.ErrorHandler(
@@ -18,7 +19,7 @@ const UserController = {
                 "No users have been found"
             );
         // Response
-        res.status(200).json({ users: users });
+        res.status(200).json({ usersCount: usersCount, users: users });
     },
 
     // GET user
