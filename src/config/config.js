@@ -18,5 +18,9 @@ module.exports = {
     jwt: {
         secret: process.env.JWT_SECRET,
         expiration: process.env.JWT_EXPIRATION
+    },
+    fb: {
+        id: process.env.FB_ID,
+        secret: process.env.FB_SECRET
     }
 };
