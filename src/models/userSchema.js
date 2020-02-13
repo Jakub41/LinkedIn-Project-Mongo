@@ -26,6 +26,11 @@ const UserSchema = new Schema({
     },
     accessToken: {
         type: String
+    },
+
+    profile: {
+        type: Connect.Schema.Types.ObjectId,
+        ref: "Profile"
     }
 });
 

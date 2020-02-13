@@ -73,7 +73,7 @@ const profileSchema = {
         trim: true,
         lowercase: true,
         unique: true,
-        required: [true, "Email is required"],
+        required: [false, "Email is required"],
         validate: {
             validator: string => isEmail(string),
             message: "Provided email is invalid"
@@ -105,6 +105,11 @@ const profileSchema = {
         type: String,
         required: true,
         unique: true
+    },
+    user:  {
+        type: Connect.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
     },
 
     experience: [experienceSchema],

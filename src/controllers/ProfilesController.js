@@ -1,5 +1,5 @@
 // Profile model
-const { Profile } = require("../models");
+const { Profile, User } = require("../models");
 // Error handling
 const { ErrorHandlers, pdfMaker } = require("../utilities");
 
@@ -53,6 +53,16 @@ const ProfilesController = {
                 throw new ErrorHandlers.ErrorHandler(500, "Nothing to create");
             }
 
+            // Find the user by Id as we are referencing this 2 collections
+            const user = await User.findById(req.body.user);
+
+            // No user no Profile
+            if (!user)
+                throw new ErrorHandlers.ErrorHandler(
+                    500,
+                    "User does not exist"
+                );
+
             // Profile init model
             const profile = new Profile({
                 ...req.body
@@ -67,6 +77,25 @@ const ProfilesController = {
                     "Profile cannot be saved"
                 );
             }
+
+            // Updating profile with user Id
+            const updateIdUserProfile = await Profile.findOneAndUpdate(
+                { _id: newProfile._id },
+                { $set: { user: user._id } }
+            );
+
+            // Updating user with profile Id
+            const updateIdProfileUser = await User.findOneAndUpdate(
+                { _id: user._id },
+                { $set: { profile: newProfile._id } }
+            );
+
+            // Error check
+            if (!updateIdProfileUser || !updateIdUserProfile)
+                throw new ErrorHandlers.ErrorHandler(
+                    500,
+                    "Was not possible to save"
+                );
 
             // All OK send the response with results
             res.status(201).json({ message: "New profile added", newProfile });
