@@ -6,17 +6,20 @@ const router = express.Router();
 const { UserCtrl, UserAuthCtrl } = require("../controllers");
 // Auth middleware
 const { Auth } = require("../middlewares");
+// Passport
+const passport = require("passport");
 
 // Auth we specify that we only want to grant access to roles
 // that are permitted to perform the specified action on the provided resource
 // SignUp user register
 router.post("/signup", UserAuthCtrl.signup);
+
 // Login user access
 router.post("/login", UserAuthCtrl.login);
-// Password reset
 
 // GET one user access
 router.get("/:userId", Auth.allowIfLoggedin, UserCtrl.getUser);
+
 // GET users roles access
 router.get(
     "/",
@@ -27,11 +30,7 @@ router.get(
 
 // Reset password
 // authorization token is required
-router.post(
-    "/passwordReset",
-    Auth.allowIfLoggedin,
-    UserAuthCtrl.passwordReset
-);
+router.post("/passwordReset", Auth.allowIfLoggedin, UserAuthCtrl.passwordReset);
 
 // PUT update user
 router.put(
@@ -47,5 +46,8 @@ router.delete(
     Auth.grantAccess("deleteOwn", "user"),
     UserCtrl.deleteUser
 );
+
+// Facebook login
+router.post("/fbLogin", passport.authenticate("fb"), UserAuthCtrl.fbLogin);
 
 module.exports = router;

@@ -184,15 +184,13 @@ const passwordReset = async (req, res, next) => {
     }
 };
 
-// Facebook Auth
-const facebookOAuth = async (req, res, next) => {
-    if (!req.user) {
-        return res.send(401, "User not authenticated");
-    }
+// Facebook login
+const fbLogin = async (req, res, next) => {
+    const token = Token.getToken({_id: req.user._id});
+    res.json({
+        access_token: token,
+        user: req.user
+    })
+}
 
-    const accessToken = Token.getToken({ userId: newUser._id });
-
-
-};
-
-module.exports = { signup, login, passwordReset, facebookOAuth };
+module.exports = { signup, login, passwordReset, fbLogin };

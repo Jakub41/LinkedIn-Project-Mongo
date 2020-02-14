@@ -21,6 +21,7 @@ module.exports = {
     },
     fb: {
         id: process.env.FB_ID,
-        secret: process.env.FB_SECRET
+        secret: process.env.FB_SECRET,
+        callBack: process.env.FB_CALL_BACK
     }
 };

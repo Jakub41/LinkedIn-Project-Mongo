@@ -1,5 +1,6 @@
 const { Connect } = require("../db");
 const { isEmail } = require("validator");
+const passportLocalMongoose = require("passport-local-mongoose");
 
 const Schema = Connect.Schema;
 
@@ -31,8 +32,13 @@ const UserSchema = new Schema({
     profile: {
         type: Connect.Schema.Types.ObjectId,
         ref: "Profile"
-    }
+    },
+
+    facebookId: String,
+    refreshToken: String
 });
+
+UserSchema.plugin(passportLocalMongoose);
 
 const User = Connect.model("user", UserSchema);
 

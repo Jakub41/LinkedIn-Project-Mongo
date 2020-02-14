@@ -15,7 +15,7 @@ router.use(BaseURL + "search", require("./Search"));
 router.use(BaseURL + "user", require("./userAuth"));
 
 // Services FB
-router.use(BaseURL + "auth", require("../services/fb/fb"));
+router.use(BaseURL + "facebook", require("./fb"));
 
 // Exporting the Index Router
 module.exports = router;

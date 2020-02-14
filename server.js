@@ -17,6 +17,9 @@ const morgan = require("morgan");
 const app = express();
 const port = Config.server.port || 5000;
 
+// Passport lib
+const passport = require("passport");
+
 // Cors
 app.use(cors());
 
@@ -25,6 +28,9 @@ app.use(express.static(path.join(__dirname, "./public")));
 
 // JSON
 app.use(express.json());
+
+// Passport init
+app.use(passport.initialize());
 
 // Logs
 app.use(morgan("dev"));
