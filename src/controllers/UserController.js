@@ -44,25 +44,42 @@ const UserController = {
     // UPDATE user
     async updateUser(req, res, next) {
         try {
-            // Check empty req.body
+            // Check permission to operation
+            const user = res.locals.loggedInUser;
+
+            console.log("USER ID LOGGED", user._id);
+
+            if (user._id !== req.params.userId) {
+                throw next(
+                    new ErrorHandlers.ErrorHandler(401, "Permission denied")
+                );
+            }
+
+            // Check for empty req.body
             if (Object.keys(req.body).length === 0) {
                 throw new ErrorHandlers.ErrorHandler(500, "Nothing to update");
+            } else {
+                // Find id and update the fields
+                const updatedUser = await User.findByIdAndUpdate(
+                    { _id: req.params.userId },
+                    req.body,
+                    (err, response) => {
+                        return response;
+                    }
+                );
+
+                // Error check
+                if (!updatedUser) {
+                    throw next(
+                        new ErrorHandlers.ErrorHandler(400, "Update failed")
+                    );
+                }
+
+                // Send result
+                res.json({ message: "User updates", updatedUser });
             }
-            // Body to update
-            const update = req.body;
-            // UserId to update
-            const userId = req.params.userId;
-            // Finding the user to update
-            await User.findByIdAndUpdate(userId, update);
-            // Updated user
-            const user = await User.findById(userId);
-            // Response
-            res.status(200).json({
-                user: user,
-                message: "User has been updated"
-            });
-        } catch (error) {
-            next(error);
+        } catch (err) {
+            next(err);
         }
     },
 

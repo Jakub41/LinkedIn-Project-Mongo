@@ -33,7 +33,7 @@ router.get(
 router.post("/passwordReset", Auth.allowIfLoggedin, UserAuthCtrl.passwordReset);
 
 // PUT update user
-router.put(
+router.patch(
     "/:userId",
     Auth.allowIfLoggedin,
     Auth.grantAccess("updateOwn", "user"),

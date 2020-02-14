@@ -10,12 +10,17 @@ let grantsObject = {
             "delete:any": ["*"]
         }
     },
+    moderator: {
+        user: {
+            "read:any": ["*"]
+        }
+    },
     basic: {
         user: {
             "create:own": ["*"],
             "read:own": ["*"],
             "update:own": ["*"],
-            "delete:own": ["*"],
+            "delete:own": ["*"]
         }
     }
 };

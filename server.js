@@ -29,6 +29,12 @@ app.use(express.static(path.join(__dirname, "./public")));
 // JSON
 app.use(express.json());
 
+app.use(
+    express.urlencoded({
+        extended: true
+    })
+);
+
 // Passport init
 app.use(passport.initialize());
 
