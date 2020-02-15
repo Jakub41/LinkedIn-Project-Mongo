@@ -20,6 +20,9 @@ router.post("/login", UserAuthCtrl.login);
 // GET one user access
 router.get("/:userId", Auth.allowIfLoggedin, UserCtrl.getUser);
 
+// load user if user has authorization token in header
+router.get("/loadUser", Auth.allowIfLoggedin, UserAuthCtrl.loadUserWithToken);
+
 // GET users roles access
 router.get(
     "/",

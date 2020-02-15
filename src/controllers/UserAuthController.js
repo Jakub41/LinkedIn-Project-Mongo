@@ -186,11 +186,21 @@ const passwordReset = async (req, res, next) => {
 
 // Facebook login
 const fbLogin = async (req, res, next) => {
-    const token = Token.getToken({_id: req.user._id});
+    const token = Token.getToken({ _id: req.user._id });
     res.json({
         access_token: token,
         user: req.user
-    })
-}
+    });
+};
 
-module.exports = { signup, login, passwordReset, fbLogin };
+//load user with token user
+const loadUserWithToken = (req, res, next) => {
+    let user = req.user;
+    user.password = undefined;
+    res.json({
+        user: user,
+        accessToken: user.accessToken
+    });
+};
+
+module.exports = { signup, login, passwordReset, fbLogin, loadUserWithToken };
