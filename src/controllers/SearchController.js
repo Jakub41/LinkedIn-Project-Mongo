@@ -8,13 +8,15 @@ const SearchController = {
         try {
             const set = {};
 
-            if (req.query.fn) {
+            const { fn, ln, cp } = req.query
+
+            if (fn) {
                 set["firstname"] = req.query.fn;
             }
-            if (req.query.ln) {
+            if (ln) {
                 set["surname"] = req.query.ln;
             }
-            if (req.query.cp) {
+            if (cp) {
                 set["experience.company"] = req.query.cp;
             }
 
@@ -25,7 +27,7 @@ const SearchController = {
                 if ((await searchResult).length === 0)
                     throw new ErrorHandlers.ErrorHandler(
                         404,
-                        "Query do not provided any result"
+                        `Query do not provided any result`
                     );
                 res.status(200).json(searchResult);
             } else {
