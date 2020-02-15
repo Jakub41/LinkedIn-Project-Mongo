@@ -21,11 +21,12 @@ async function validatePassword(plainPassword, hashedPassword) {
 }
 
 // SignUp user
+// SignUp user
 const signup = async (req, res, next) => {
     try {
         // Body
         const { email, password, role } = req.body;
-
+        console.log(email);
         // Validate the password format
         if (!isValidPsw(password))
             return next(
@@ -34,7 +35,6 @@ const signup = async (req, res, next) => {
                     `Password >${password}< is not in the right format: at least 8 chars long but max 64; min 1 uppercase; min 1 lowercase; min 1 digits; min 1 symbol; no whitespace`
                 )
             );
-
         // Password hashed
         const hashedPassword = await hashPassword(password);
 
@@ -51,16 +51,20 @@ const signup = async (req, res, next) => {
         // We need private secret key in the ENV
         // to compare auth
         const accessToken = Token.getToken({ userId: newUser._id });
-
+        console.log(accessToken);
         // New user token
         newUser.accessToken = accessToken;
 
         // New user save
         await newUser.save();
-
+        newUser.password = undefined;
         // Response
         res.json({
-            data: newUser,
+            user: {
+                email: newUser.email,
+                role: newUser.role,
+                _id: newUser._id
+            },
             accessToken,
             message: "User created successfully"
         });
@@ -105,7 +109,7 @@ const login = async (req, res, next) => {
         // Response
         res.status(200).json({
             message: "Logged in",
-            data: { email: user.email, role: user.role },
+            user: { email: user.email, role: user.role, _id: user._id },
             accessToken
         });
     } catch (err) {

@@ -9,29 +9,39 @@ const jwt = require("jsonwebtoken");
 
 // Access token header
 const accessToken = async (req, res, next) => {
-    try {
-        if (req.headers["authorization"]) {
-            // Token from header Bearer in front
-            // Getting off of it
-            const accessToken = req.headers["authorization"];
-            const token = accessToken.split(" ");
-            const tk = token[1];
+    // Token pass in header as Bearer authorization
+    if (req.headers["authorization"]) {
+        // Token from header Bearer in front
+        // Getting off of it
+        const accessToken = req.headers["authorization"];
+        const token = accessToken.split(" ")[1];
 
-            // Token verification with user provided
-            const { userId } = await jwt.verify(tk, Config.jwt.secret);
+        // User and expiration
+        let userId = "";
+        let exp = "";
 
+        // Token verification with user provided
+        try {
+            const d = await jwt.verify(token, Config.jwt.secret);
+
+            userId = d.userId;
+            exp = d.exp;
+            // Check if token has expired
+            if (exp < Date.now().valueOf() / 1000) {
+                throw new ErrorHandlers.ErrorHandler(
+                    401,
+                    "JWT token has expired, please login to obtain a new one"
+                );
+            }
             // Logged in user find
             res.locals.loggedInUser = await User.findById(userId);
-            // Token logged user
-            res.locals.accessToken = tk;
+            res.locals.accessToken = token;
             next();
-        } else {
-            next();
+        } catch (err) {
+            return res.status(401).json({ msg: "Token is not valid" });
         }
-    } catch (err) {
-        next(err);
+    } else {
+        next();
     }
-    // Token pass in header as Bearer authorization
 };
-
 module.exports = accessToken;
