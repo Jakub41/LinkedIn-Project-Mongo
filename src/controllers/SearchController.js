@@ -16,20 +16,23 @@ const SearchController = {
             // First name
             if (fn) {
                 set["firstname"] = new RegExp(
-                    "\\b" + req.query.fn + "\\b",
+                    "\\b.*" + req.query.fn + ".*\\b",
                     "i"
                 );
             }
 
             // Last name
             if (ln) {
-                set["surname"] = new RegExp("\\b" + req.query.ln + "\\b", "i");
+                set["surname"] = new RegExp(
+                    "\\b.*" + req.query.ln + ".*\\b",
+                    "i"
+                );
             }
 
             // Company
             if (cp) {
                 set["experience.company"] = new RegExp(
-                    "\\b" + req.query.cp + "\\b",
+                    "\\b.*" + req.query.cp + ".*\\b",
                     "i"
                 );
             }
