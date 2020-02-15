@@ -6,31 +6,52 @@ const { ErrorHandlers } = require("../utilities");
 const SearchController = {
     async getQuery(req, res) {
         try {
+            // Set
             const set = {};
 
-            const { fn, ln, cp } = req.query
+            // query params
+            const { fn, ln, cp } = req.query;
 
+            // RexExp to allow upper and lower case in the search
+            // First name
             if (fn) {
-                set["firstname"] = req.query.fn;
-            }
-            if (ln) {
-                set["surname"] = req.query.ln;
-            }
-            if (cp) {
-                set["experience.company"] = req.query.cp;
+                set["firstname"] = new RegExp(
+                    "\\b" + req.query.fn + "\\b",
+                    "i"
+                );
             }
 
+            // Last name
+            if (ln) {
+                set["surname"] = new RegExp("\\b" + req.query.ln + "\\b", "i");
+            }
+
+            // Company
+            if (cp) {
+                set["experience.company"] = new RegExp(
+                    "\\b" + req.query.cp + "\\b",
+                    "i"
+                );
+            }
+
+            //
             if (Object.keys(set).length != 0) {
+                // Searching the profile results
                 const searchResult = await Profile.find(set, (err, doc) => {
                     return doc;
                 });
+
+                // No results
                 if ((await searchResult).length === 0)
                     throw new ErrorHandlers.ErrorHandler(
                         404,
                         `Query do not provided any result`
                     );
+
+                // Response
                 res.status(200).json(searchResult);
             } else {
+                // No result
                 throw new ErrorHandlers.ErrorHandler(
                     404,
                     "Query do not provided any result"
