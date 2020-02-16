@@ -34,14 +34,18 @@ const accessToken = async (req, res, next) => {
                 );
             }
             // Logged in user find
-            res.locals.loggedInUser = await User.findById(userId);
+            res.locals.loggedInUser = await User.findById(userId).populate(
+                "profile"
+            );
             res.locals.accessToken = token;
             next();
         } catch (err) {
+            console.log(err);
             return res.status(401).json({ msg: "Token is not valid" });
         }
     } else {
         next();
     }
 };
+
 module.exports = accessToken;

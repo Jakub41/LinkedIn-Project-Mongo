@@ -21,7 +21,11 @@ router.post("/login", UserAuthCtrl.login);
 router.get("/:userId", Auth.allowIfLoggedin, UserCtrl.getUser);
 
 // load user if user has authorization token in header
-router.get("/loadUser", Auth.allowIfLoggedin, UserAuthCtrl.loadUserWithToken);
+router.get(
+    "/loadUser/:token",
+    Auth.allowIfLoggedin,
+    UserAuthCtrl.loadUserWithToken
+);
 
 // GET users roles access
 router.get(

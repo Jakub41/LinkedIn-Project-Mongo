@@ -21,7 +21,6 @@ async function validatePassword(plainPassword, hashedPassword) {
 }
 
 // SignUp user
-// SignUp user
 const signup = async (req, res, next) => {
     try {
         // Body
@@ -80,7 +79,7 @@ const login = async (req, res, next) => {
         const { email, password } = req.body;
 
         // Find the user by email
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).populate("profile");
 
         // Check error user exist
         if (!user)
@@ -107,9 +106,10 @@ const login = async (req, res, next) => {
         if (!User)
             return next(new ErrorHandlers.ErrorHandler(401, "User not found"));
         // Response
+        user.password = undefined;
         res.status(200).json({
             message: "Logged in",
-            user: { email: user.email, role: user.role, _id: user._id },
+            user: user,
             accessToken
         });
     } catch (err) {
@@ -199,7 +199,7 @@ const fbLogin = async (req, res, next) => {
 
 //load user with token user
 const loadUserWithToken = (req, res, next) => {
-    let user = req.user;
+    let user = res.locals.loggedInUser;
     user.password = undefined;
     res.json({
         user: user,

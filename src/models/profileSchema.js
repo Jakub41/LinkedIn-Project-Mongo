@@ -106,7 +106,7 @@ const profileSchema = {
         required: true,
         unique: true
     },
-    user:  {
+    user: {
         type: Connect.Schema.Types.ObjectId,
         ref: "User",
         required: true
@@ -127,8 +127,6 @@ const profileSchema = {
         required: false
     }
 };
-
-
 
 const collectionName = "profile";
 const profileSchemaModel = Connect.Schema(profileSchema);
