@@ -37,24 +37,54 @@ const SearchController = {
                 );
             }
 
-            //
-            if (Object.keys(set).length != 0) {
-                // Searching the profile results
-                const searchResult = await Profile.find(set, (err, doc) => {
-                    return doc;
-                });
+            let searchResult = "";
 
+            if (Object.keys(set).length != 0) {
+                // Limit & sort results
+                if (req.query.limit || req.query.sort) {
+                    // Descendant
+                    if (req.query.sort === "dsc") {
+                        const limit = parseInt(req.query.limit);
+                        searchResult = await Profile.find(set, (err, doc) => {
+                            return doc;
+                        })
+                            .limit(limit)
+                            .sort({ _id: -1 });
+                        // Ascendant
+                    } else if (req.query.sort === "asc") {
+                        const limit = parseInt(req.query.limit);
+                        searchResult = await Profile.find(set, (err, doc) => {
+                            return doc;
+                        })
+                            .limit(limit)
+                            .sort({ _id: 1 });
+                    } else {
+                        // Limit of result
+                        const limit = parseInt(req.query.limit);
+                        searchResult = await Profile.find(set, (err, doc) => {
+                            return doc;
+                        })
+                            .limit(limit)
+                            .sort({ _id: 1 });
+                    }
+                } else {
+                    // Results without sort & limit
+                    searchResult = await Profile.find(set, (err, doc) => {
+                        return doc;
+                    });
+                }
                 // No results
                 if ((await searchResult).length === 0)
                     throw new ErrorHandlers.ErrorHandler(
                         404,
-                        `Query do not provided any result`
+                        "Query do not provided any result"
                     );
-
-                // Response
-                res.status(200).json(searchResult);
+                // Results
+                res.status(200).json({
+                    count: searchResult.length,
+                    data: searchResult
+                });
             } else {
-                // No result
                 throw new ErrorHandlers.ErrorHandler(
                     404,
                     "Query do not provided any result"
