@@ -40,6 +40,6 @@ const UserSchema = new Schema({
 
 UserSchema.plugin(passportLocalMongoose);
 
-const User = Connect.model("user", UserSchema);
+const User = Connect.model("User", UserSchema);
 
 module.exports = User;

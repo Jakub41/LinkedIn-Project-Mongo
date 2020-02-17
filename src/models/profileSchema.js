@@ -13,22 +13,18 @@ const experienceSchema = {
         type: String,
         required: true
     },
-
     company: {
         type: String,
         required: true
     },
-
     startDate: {
         type: Date,
         required: true
     },
-
     endDate: {
         type: Date,
         required: false
     },
-
     description: {
         type: String,
         required: false
@@ -132,7 +128,7 @@ const profileSchema = {
     }
 };
 
-const collectionName = "profile";
+const collectionName = "Profile";
 const profileSchemaModel = Connect.Schema(profileSchema);
 const Profile = Connect.model(collectionName, profileSchemaModel);
 
