@@ -109,8 +109,7 @@ const login = async (req, res, next) => {
         user.password = undefined;
         res.status(200).json({
             message: "Logged in",
-            user: user,
-            accessToken
+            user: user
         });
     } catch (err) {
         next(err);
