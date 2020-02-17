@@ -13,6 +13,9 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
+        "faker": "^4.1.0",
+        "lodash": "^4.17.15",
+        "mongodb": "^3.5.3",
         "ndb": "^1.1.5",
         "nodemon": "^2.0.2"
     },
