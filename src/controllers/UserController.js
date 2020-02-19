@@ -88,6 +88,16 @@ const UserController = {
         try {
             // UserId param
             const userId = req.params.userId;
+
+            // Check who is deleting
+            const user = res.locals.loggedInUser;
+
+            if (user._id !== userId) {
+                throw next(
+                    new ErrorHandlers.ErrorHandler(401, "Permission denied")
+                );
+            }
+
             // Find the user and delete
             await User.findByIdAndDelete(userId);
             // Response
