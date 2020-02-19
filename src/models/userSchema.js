@@ -1,7 +1,7 @@
 const { Connect } = require("../db");
 const { isEmail } = require("validator");
 const passportLocalMongoose = require("passport-local-mongoose");
-
+const crpto = require("crypto");
 const Schema = Connect.Schema;
 
 const UserSchema = new Schema({
@@ -18,17 +18,19 @@ const UserSchema = new Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
     },
+
+    passwordCreatedAt: {
+        type: Date,
+        default: Date.now,
+    },
+
     role: {
         type: String,
         default: "basic",
         enum: ["basic", "moderator", "admin"]
     },
-    accessToken: {
-        type: String
-    },
-
     profile: {
         type: Connect.Schema.Types.ObjectId,
         ref: "Profile"
@@ -37,6 +39,20 @@ const UserSchema = new Schema({
     facebookId: String,
     refreshToken: String
 });
+
+// Password expiration check
+UserSchema.methods.checkPasswordDate = function(jwtTime) {
+
+    if (this.passwordCreatedAt) {
+        const changePassword = parseInt(
+            this.passwordCreatedAt.getTime() / 1000,
+            10
+        );
+        return jwtTime < changePassword;
+    }
+    return false;
+};
+
 
 UserSchema.plugin(passportLocalMongoose);
 

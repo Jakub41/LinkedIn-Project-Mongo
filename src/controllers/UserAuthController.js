@@ -25,7 +25,7 @@ const signup = async (req, res, next) => {
     try {
         // Body
         const { email, password, role } = req.body;
-        console.log(email);
+       
         // Validate the password format
         if (!isValidPsw(password))
             return next(
@@ -50,13 +50,9 @@ const signup = async (req, res, next) => {
         // We need private secret key in the ENV
         // to compare auth
         const accessToken = Token.getToken({ userId: newUser._id });
-        console.log(accessToken);
-        // New user token
-        newUser.accessToken = accessToken;
 
         // New user save
         await newUser.save();
-        newUser.password = undefined;
         // Response
         res.json({
             user: {
@@ -99,17 +95,14 @@ const login = async (req, res, next) => {
         // User token auth
         const accessToken = Token.getToken({ userId: user._id });
 
-        // Find user with token
-        await User.findByIdAndUpdate(user._id, { accessToken });
+        //prepare user for resposnse
+        const resUser = prepareUserForRespons(user);
 
-        // Not user
-        if (!User)
-            return next(new ErrorHandlers.ErrorHandler(401, "User not found"));
         // Response
-        user.password = undefined;
         res.status(200).json({
             message: "Logged in",
-            user: user
+            user: resUser,
+            accessToken
         });
     } catch (err) {
         next(err);
@@ -121,7 +114,7 @@ const passwordReset = async (req, res, next) => {
     try {
         // User credentials body
         const { oldPassword, newPassword } = req.body;
-
+     
         // Check presence of passwords
         if (!newPassword || !oldPassword) {
             return next(new ErrorHandlers.ErrorHandler(401, "Api Bad use"));
@@ -136,9 +129,7 @@ const passwordReset = async (req, res, next) => {
                 )
             );
         // Find the user by email
-        const user = await User.findOne({
-            accessToken: res.locals.accessToken
-        });
+        const user = await User.findById(req.user._id);
         // Check error user exist
         if (!user)
             return next(
@@ -170,16 +161,15 @@ const passwordReset = async (req, res, next) => {
 
         // User Update
         await User.findByIdAndUpdate(user._id, {
-            accessToken,
-            password: hashedPassword
+            password: hashedPassword,
+            passwordCreatedAt: Date.now()
         });
         // Not user
         if (!User)
             return next(new ErrorHandlers.ErrorHandler(401, "User not found"));
-        // Response
+        // Response 
         res.status(200).json({
             message: "Password Changed successfully",
-            data: { email: user.email, role: user.role },
             accessToken
         });
     } catch (err) {
@@ -198,12 +188,23 @@ const fbLogin = async (req, res, next) => {
 
 //load user with token user
 const loadUserWithToken = (req, res, next) => {
-    let user = res.locals.loggedInUser;
-    user.password = undefined;
+    const user = req.user;
+
+    const token = Token.getToken({ _id: user._id });
+    //prepare responend uers
+    const resUser = prepareUserForRespons(user);
     res.json({
-        user: user,
-        accessToken: user.accessToken
+        user: resUser,
+        access_token: token
     });
+};
+
+const prepareUserForRespons = user => {
+    let resUser = { email: user.email, _id: user._id };
+    if (user.profile) {
+        resUser.profile = user.profile;
+    }
+    return resUser;
 };
 
 module.exports = { signup, login, passwordReset, fbLogin, loadUserWithToken };

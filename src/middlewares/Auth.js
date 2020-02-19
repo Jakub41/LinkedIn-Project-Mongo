@@ -1,43 +1,77 @@
 // Error utility
 // Roles utility => basic, moderator and admin
 const { Roles, ErrorHandlers } = require("../utilities");
+const { promisify } = require("util");
+// user Modal
+const { User } = require("../models");
+
+const { Config } = require("../config");
+
+// JWT
+const jwt = require("jsonwebtoken");
 
 // Allowing access to right role permission
-const grantAccess = (action, resource) => {
-    return async (req, res, next) => {
-        try {
-            console.log(req.user.role);
-            // Permission to perform the specified action of the provided resource
-            const permission = Roles.roles.can(req.user.role)[action](resource);
-            // No permission => 401
-            if (!permission.granted) {
-                throw new ErrorHandlers.ErrorHandler(
-                    401,
-                    "You don't have enough permission to perform this action"
-                );
-            }
-            next();
-        } catch (error) {
-            next(error);
+const grantAccess = (...para) => {
+    return (req, res, next) => {
+        if (!para.includes(req.user.role)) {
+            throw new ErrorHandlers.ErrorHandler(
+                401,
+                "You don't have enough permission to perform this action"
+            );
         }
+        next();
     };
 };
 
 // Allow if user logged in
 const allowIfLoggedin = async (req, res, next) => {
     try {
-        console.log("LOCALS", JSON.stringify(res.locals));
-        const user = res.locals.loggedInUser;
-        if (!user)
+        //check the authorization header
+        if (!req.headers.authorization) {
             throw new ErrorHandlers.ErrorHandler(
                 401,
-                "You need to be logged in to perform this operation"
+                "Please provide the authorization header"
             );
-        // User
-        req.user = user;
+        }
+        const token = req.headers.authorization.split(" ")[1];
+        // if token not provides
+        if (!token) {
+            throw new ErrorHandlers.ErrorHandler(
+                401,
+                "you are not login in please login first"
+            );
+        }
+        //varify is async that why use promisity
+        const varify = await promisify(jwt.verify)(token, Config.jwt.secret);
+
+        if (Date.now() >= varify.exp * 1000) {
+            throw new ErrorHandlers.ErrorHandler(
+                401,
+                "Your token is expired. Please login again to get the new token"
+            );
+        }
+
+        const currentUser = await User.findById(varify.userId).populate(
+            "profile"
+        );
+        if (!currentUser) {
+            throw new ErrorHandlers.ErrorHandler(
+                401,
+                "Your provided token is not related to any user"
+            );
+        }
+        //check for update password date and token creattoin date
+        if (currentUser.checkPasswordDate(varify.iat)) {
+            throw new ErrorHandlers.ErrorHandler(
+                401,
+                "Please login yourself with updated password"
+            );
+        }
+
+        req.user = currentUser;
         next();
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        next(err);
     }
 };
 

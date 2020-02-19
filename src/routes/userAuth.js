@@ -31,26 +31,26 @@ router.get(
 router.get(
     "/",
     Auth.allowIfLoggedin,
-    Auth.grantAccess("readAny", "user"),
+    Auth.grantAccess("admin"),
     UserCtrl.getUsers
 );
 
 // Reset password
 // authorization token is required
-router.post("/passwordReset", Auth.allowIfLoggedin, UserAuthCtrl.passwordReset);
+router.patch("/passwordReset", Auth.allowIfLoggedin, UserAuthCtrl.passwordReset);
 
 // PUT update user
 router.patch(
     "/:userId",
     Auth.allowIfLoggedin,
-    Auth.grantAccess("updateOwn", "user"),
+    Auth.grantAccess("user"),
     UserCtrl.updateUser
 );
 // DELETE user
 router.delete(
     "/:userId",
     Auth.allowIfLoggedin,
-    Auth.grantAccess("deleteOwn", "user"),
+    Auth.grantAccess("admin"),
     UserCtrl.deleteUser
 );
 
