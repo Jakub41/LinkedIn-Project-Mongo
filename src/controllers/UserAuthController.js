@@ -25,7 +25,14 @@ const signup = async (req, res, next) => {
     try {
         // Body
         const { email, password, role } = req.body;
-       
+        if (!email || !password) {
+            return next(
+                new ErrorHandlers.ErrorHandler(
+                    401,
+                    `Please fill the required detail`
+                )
+            );
+        }
         // Validate the password format
         if (!isValidPsw(password))
             return next(
@@ -43,17 +50,18 @@ const signup = async (req, res, next) => {
         const newUser = new User({
             email,
             password: hashedPassword,
+            username: email,
             role: role || "basic"
         });
 
         // Assign token
         // We need private secret key in the ENV
         // to compare auth
-        const accessToken = Token.getToken({ userId: newUser._id });
 
         // New user save
         await newUser.save();
         // Response
+        const accessToken = Token.getToken({ userId: newUser._id });
         res.json({
             user: {
                 email: newUser.email,
@@ -96,7 +104,7 @@ const login = async (req, res, next) => {
         const accessToken = Token.getToken({ userId: user._id });
 
         //prepare user for resposnse
-        const resUser = prepareUserForRespons(user);
+        const resUser = prepareUserForResponse(user);
 
         // Response
         res.status(200).json({
@@ -114,7 +122,7 @@ const passwordReset = async (req, res, next) => {
     try {
         // User credentials body
         const { oldPassword, newPassword } = req.body;
-     
+
         // Check presence of passwords
         if (!newPassword || !oldPassword) {
             return next(new ErrorHandlers.ErrorHandler(401, "Api Bad use"));
@@ -155,7 +163,6 @@ const passwordReset = async (req, res, next) => {
             );
 
         // User access token update auth
-        const accessToken = Token.getToken({ userId: user._id });
         //new password hashed
         const hashedPassword = await hashPassword(newPassword);
 
@@ -167,7 +174,9 @@ const passwordReset = async (req, res, next) => {
         // Not user
         if (!User)
             return next(new ErrorHandlers.ErrorHandler(401, "User not found"));
-        // Response 
+        // Response
+        const accessToken = Token.getToken({ userId: user._id });
+
         res.status(200).json({
             message: "Password Changed successfully",
             accessToken
@@ -179,28 +188,61 @@ const passwordReset = async (req, res, next) => {
 
 // Facebook login
 const fbLogin = async (req, res, next) => {
-    const token = Token.getToken({ _id: req.user._id });
-    res.json({
-        access_token: token,
-        user: req.user
-    });
+    try {
+        const { id, email, accessToken } = req.body;
+        //find one by email
+        const user = await User.findOne({ email });
+
+        if (user) {
+            //update the user with facebook key
+            const upDateUser = await User.findByIdAndUpdate(
+                user._id,
+                { facebookId: id },
+                { new: true }
+            ).populate("profile");
+            const token = Token.getToken({ userId: upDateUser._id });
+            const resUser = prepareUserForResponse(upDateUser);
+            return res.json({
+                user: resUser,
+                accessToken: token
+            });
+        }
+        // because password is required to create the user so we create fake password
+        const fakePassword = accessToken;
+        const newUser = new User({
+            email,
+            username: email,
+            password: fakePassword,
+            facebookId: id
+        });
+        await newUser.save();
+
+        const token = Token.getToken({ userId: newUser._id });
+        const resUser = prepareUserForResponse(newUser);
+        res.json({
+            user: resUser,
+            accessToken: token
+        });
+    } catch (err) {
+        next(err);
+    }
 };
 
 //load user with token user
 const loadUserWithToken = (req, res, next) => {
     const user = req.user;
 
-    const token = Token.getToken({ _id: user._id });
-    //prepare responend uers
-    const resUser = prepareUserForRespons(user);
+    const token = Token.getToken({ userId: user._id });
+    //prepare responded users
+    const resUser = prepareUserForResponse(user);
     res.json({
         user: resUser,
-        access_token: token
+        accessToken: token
     });
 };
 
-const prepareUserForRespons = user => {
-    let resUser = { email: user.email, _id: user._id };
+const prepareUserForResponse = user => {
+    let resUser = { email: user.email, _id: user._id, role: user.role };
     if (user.profile) {
         resUser.profile = user.profile;
     }

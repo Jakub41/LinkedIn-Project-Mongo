@@ -55,6 +55,6 @@ router.delete(
 );
 
 // Facebook login
-router.post("/fbLogin", passport.authenticate("fb"), UserAuthCtrl.fbLogin);
+router.post("/facebookAuth", UserAuthCtrl.fbLogin);
 
 module.exports = router;

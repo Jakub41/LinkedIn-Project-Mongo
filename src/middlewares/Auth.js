@@ -41,17 +41,17 @@ const allowIfLoggedin = async (req, res, next) => {
                 "you are not login in please login first"
             );
         }
-        //varify is async that why use promisity
-        const varify = await promisify(jwt.verify)(token, Config.jwt.secret);
+        //verify is async that why use promisify
+        const verify = await promisify(jwt.verify)(token, Config.jwt.secret);
 
-        if (Date.now() >= varify.exp * 1000) {
+        if (Date.now() >= verify.exp * 1000) {
             throw new ErrorHandlers.ErrorHandler(
                 401,
                 "Your token is expired. Please login again to get the new token"
             );
         }
 
-        const currentUser = await User.findById(varify.userId).populate(
+        const currentUser = await User.findById(verify.userId).populate(
             "profile"
         );
         if (!currentUser) {
@@ -60,8 +60,12 @@ const allowIfLoggedin = async (req, res, next) => {
                 "Your provided token is not related to any user"
             );
         }
-        //check for update password date and token creattoin date
-        if (currentUser.checkPasswordDate(varify.iat)) {
+        // check for update password date and token creation date
+        if (
+            currentUser.passwordCreatedAt &&
+            verify.iat <
+                parseInt(currentUser.passwordCreatedAt.getTime() / 1000)
+        ) {
             throw new ErrorHandlers.ErrorHandler(
                 401,
                 "Please login yourself with updated password"

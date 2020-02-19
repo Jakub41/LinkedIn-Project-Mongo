@@ -18,12 +18,11 @@ const UserSchema = new Schema({
     },
     password: {
         type: String,
-        required: true,
+        required: true
     },
 
     passwordCreatedAt: {
         type: Date,
-        default: Date.now,
     },
 
     role: {
@@ -39,19 +38,6 @@ const UserSchema = new Schema({
     facebookId: String,
     refreshToken: String
 });
-
-// Password expiration check
-UserSchema.methods.checkPasswordDate = function(jwtTime) {
-
-    if (this.passwordCreatedAt) {
-        const changePassword = parseInt(
-            this.passwordCreatedAt.getTime() / 1000,
-            10
-        );
-        return jwtTime < changePassword;
-    }
-    return false;
-};
 
 
 UserSchema.plugin(passportLocalMongoose);
